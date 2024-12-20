@@ -1,0 +1,24 @@
+{
+  "categories": [
+    {
+      "name": "Brand",
+      "description": "Brand and logo related icons",
+      "icons": [
+        {
+          "name": "github",
+          "size": 24,
+          "tags": ["brand", "social", "development"],
+          "category": "Brand",
+          "path": "/svg/Brand/github.svg"
+        },
+        {
+          "name": "github",
+          "size": 16,
+          "tags": ["brand", "social", "development"],
+          "category": "Brand",
+          "path": "/svg/Brand/github-small.svg"
+        }
+      ]
+    }
+  ]
+} 
