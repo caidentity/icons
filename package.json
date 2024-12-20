@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "generate-metadata": "ts-node --project scripts/tsconfig.json scripts/generateIconMetadata.ts"
+    "generate-metadata": "ts-node --project scripts/tsconfig.json scripts/generateIconMetadata.ts",
+    "vercel-build": "ts-node --project scripts/tsconfig.json scripts/generateIconMetadata.ts && next build"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.0.2",

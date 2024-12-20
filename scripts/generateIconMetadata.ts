@@ -3,7 +3,7 @@ import * as path from 'path';
 import type { IconMetadata, IconCategory } from '../types/icon';
 
 const SVG_DIR = path.join(process.cwd(), 'public', 'icons');
-const OUTPUT_FILE = path.join(process.cwd(), 'app', 'api', 'icons-metadata.json');
+const OUTPUT_FILE = path.join(process.cwd(), 'public', 'icons-metadata.json');
 
 interface IconInfo extends Omit<IconMetadata, 'tags'> {
   tags: string[];

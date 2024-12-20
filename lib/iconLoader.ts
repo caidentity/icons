@@ -2,7 +2,7 @@ import { IconMetadata, IconCategory } from '@/types/icon';
 
 export async function loadIconMetadata(): Promise<IconCategory[]> {
   try {
-    const response = await fetch('/api/icons');
+    const response = await fetch('/icons-metadata.json');
     const data = await response.json();
     return data.categories;
   } catch (error) {
