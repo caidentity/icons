@@ -2,10 +2,11 @@
 
 import IconViewer from '../components/IconViewer';
 
-export default function Home() {
+export default function IconsPage() {
   return (
-    <main>
+    <div className="container mx-auto px-4">
+      <h1 className="text-3xl font-bold mb-8">Icon Library</h1>
       <IconViewer />
-    </main>
+    </div>
   );
 } 
