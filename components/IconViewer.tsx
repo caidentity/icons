@@ -2,14 +2,15 @@
 
 import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Search, Download, Eye, X, Link, Check } from 'lucide-react';
+import { Search, Download, Eye, X, Link, Check, Code, ArrowDownToLine, FileText } from 'lucide-react';
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
-import { Alert } from "./ui/alert";
+import { Alert, AlertDescription } from "./ui/alert";
 import { IconMetadata, IconCategory } from '@/types/icon';
 import { loadIconMetadata, loadSvgContent } from '@/lib/iconLoader';
 import IconGrid from './IconGrid';
+import Icon from './Icon';
 
 const IconViewer = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -83,9 +84,9 @@ const IconViewer = () => {
     <div className="p-6 max-w-7xl mx-auto">
       {copyAlert && (
         <div className="fixed top-4 right-4 z-50">
-          <Alert className="bg-green-50 border-green-200 text-green-800">
+          <Alert>
             <Check className="h-4 w-4 mr-2" />
-            {copyAlert}
+            <AlertDescription>{copyAlert}</AlertDescription>
           </Alert>
         </div>
       )}
@@ -96,7 +97,9 @@ const IconViewer = () => {
         </div>
       ) : error ? (
         <Alert variant="destructive">
-          Failed to load icons. Please try again later.
+          <AlertDescription>
+            Failed to load icons. Please try again later.
+          </AlertDescription>
         </Alert>
       ) : (
         <div className={`transition-all duration-300 ${selectedIcon ? 'pr-96' : ''}`}>
@@ -178,31 +181,57 @@ const IconViewer = () => {
       {selectedIcon && (
         <div className="fixed top-0 right-0 h-full w-96 bg-white border-l shadow-lg transform transition-transform duration-300 ease-in-out overflow-y-auto">
           <div className="p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-semibold">{selectedIcon.name}</h2>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setSelectedIcon(null)}
-                className="w-8 h-8 p-0"
-              >
-                <X className="h-4 w-4" />
-              </Button>
+            <div className="border-b pb-4 mb-6">
+              <div className="flex justify-between items-center mb-2">
+                <h2 className="text-xl font-bold">Details</h2>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSelectedIcon(null)}
+                  className="w-8 h-8 p-0"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+              <p className="text-sm text-gray-600">{selectedIcon.name}</p>
             </div>
             
             <div className="space-y-6">
-              <div className="flex justify-center items-center h-48 border rounded-lg">
-                <img
-                  src={selectedIcon.path}
-                  alt={selectedIcon.name}
-                  className="w-24 h-24"
+              <div className="flex justify-center items-center h-48 border rounded-lg bg-gray-50">
+                <Icon
+                  icon={selectedIcon}
+                  showSize={true}
+                  className="p-4"
                 />
+              </div>
+              
+              <div className="space-y-2">
+                <h3 className="text-sm font-medium text-gray-500">Usage</h3>
+                <div className="bg-gray-50 p-4 rounded-lg space-y-4">
+                  <div className="space-y-2">
+                    <p className="text-xs text-gray-500">React Component</p>
+                    <pre className="text-xs bg-gray-100 p-2 rounded overflow-x-auto">
+                      <code>{`<Icon name="${selectedIcon.name}" size={${selectedIcon.size}} />`}</code>
+                    </pre>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-xs text-gray-500">Import Path</p>
+                    <pre className="text-xs bg-gray-100 p-2 rounded overflow-x-auto">
+                      <code>{selectedIcon.path}</code>
+                    </pre>
+                  </div>
+                </div>
               </div>
               
               <div className="space-y-4">
                 <div>
                   <h3 className="text-sm font-medium text-gray-500">Size</h3>
-                  <p>{selectedIcon.size}px</p>
+                  <p className="text-sm">{selectedIcon.size}px</p>
+                </div>
+                
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500">Category</h3>
+                  <p className="text-sm">{selectedIcon.category}</p>
                 </div>
                 
                 <div>
@@ -213,24 +242,44 @@ const IconViewer = () => {
                     ))}
                   </div>
                 </div>
+              </div>
 
-                <div className="flex gap-2">
-                  <Button
-                    onClick={() => handleDownload(selectedIcon)}
-                    className="flex-1"
-                  >
+              <div className="space-y-3">
+                <Button
+                  onClick={() => handleCopy(`<Icon name="${selectedIcon.name}" size={${selectedIcon.size}} />`)}
+                  variant="outline"
+                  className="w-full justify-between"
+                >
+                  <span className="flex items-center">
+                    <Code className="h-4 w-4 mr-2" />
+                    Copy Component
+                  </span>
+                  <Link className="h-4 w-4" />
+                </Button>
+                
+                <Button
+                  onClick={() => handleDownload(selectedIcon)}
+                  variant="outline"
+                  className="w-full justify-between"
+                >
+                  <span className="flex items-center">
                     <Download className="h-4 w-4 mr-2" />
                     Download SVG
-                  </Button>
-                  <Button
-                    onClick={() => handleCopy(selectedIcon.name)}
-                    variant="outline"
-                    className="flex-1"
-                  >
-                    <Link className="h-4 w-4 mr-2" />
-                    Copy Name
-                  </Button>
-                </div>
+                  </span>
+                  <ArrowDownToLine className="h-4 w-4" />
+                </Button>
+                
+                <Button
+                  onClick={() => handleCopy(selectedIcon.path)}
+                  variant="outline"
+                  className="w-full justify-between"
+                >
+                  <span className="flex items-center">
+                    <FileText className="h-4 w-4 mr-2" />
+                    Copy Path
+                  </span>
+                  <Link className="h-4 w-4" />
+                </Button>
               </div>
             </div>
           </div>
