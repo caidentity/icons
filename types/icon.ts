@@ -1,4 +1,5 @@
-export interface IconMetadata {
+// Define interfaces without export
+interface IconMetadataType {
   name: string;
   size: number;
   tags: string[];
@@ -6,8 +7,12 @@ export interface IconMetadata {
   path: string;
 }
 
-export interface IconCategory {
+interface IconCategoryType {
   name: string;
   description: string;
-  icons: IconMetadata[];
-} 
+  icons: IconMetadataType[];
+}
+
+// Export only the type declarations
+export type IconMetadata = IconMetadataType;
+export type IconCategory = IconCategoryType; 

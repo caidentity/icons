@@ -13,7 +13,8 @@ export async function loadIconMetadata(): Promise<IconCategory[]> {
 
 export async function loadSvgContent(path: string): Promise<string | null> {
   try {
-    const response = await fetch(path);
+    const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+    const response = await fetch(`/${cleanPath}`);
     const svgContent = await response.text();
     return svgContent;
   } catch (error) {
@@ -23,5 +24,5 @@ export async function loadSvgContent(path: string): Promise<string | null> {
 }
 
 export function generateIconPath(icon: IconMetadata): string {
-  return `/svg/${icon.category}/${icon.name}${icon.size === 16 ? '-small' : ''}.svg`;
+  return `/icons/${icon.category}/${icon.name}${icon.size === 16 ? '-small' : ''}.svg`;
 } 
