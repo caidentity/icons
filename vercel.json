@@ -1,0 +1,9 @@
+{
+  "buildCommand": "npm run vercel-build",
+  "outputDirectory": ".next",
+  "public": true,
+  "routes": [
+    { "src": "/icons-metadata.json", "dest": "/icons-metadata.json" },
+    { "src": "/icons/(.*)", "dest": "/icons/$1" }
+  ]
+} 
