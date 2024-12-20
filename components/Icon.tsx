@@ -8,18 +8,19 @@ interface IconProps {
   icon: IconMetadata;
   className?: string;
   onClick?: () => void;
+  showSize?: boolean;
 }
 
-const Icon = ({ icon, className = '', onClick }: IconProps) => {
+const Icon = ({ icon, className = '', onClick, showSize = true }: IconProps) => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [hasError, setHasError] = React.useState(false);
 
-  const size = icon.size === 16 ? '16px' : '24px';
+  const previewSize = showSize ? (icon.size === 16 ? '32px' : '48px') : (icon.size === 16 ? '16px' : '24px');
 
   return (
     <div 
       className={`relative inline-flex items-center justify-center ${className}`}
-      style={{ width: size, height: size }}
+      style={{ width: previewSize, height: previewSize }}
       onClick={onClick}
     >
       {isLoading && (

@@ -165,7 +165,12 @@ const IconViewer = () => {
               No icons found matching your criteria
             </div>
           ) : (
-            <IconGrid icons={filteredIcons} />
+            <IconGrid 
+              icons={filteredIcons} 
+              onIconSelect={setSelectedIcon}
+              onIconDownload={handleDownload}
+              onIconCopy={(icon) => handleCopy(icon.name)}
+            />
           )}
         </div>
       )}
