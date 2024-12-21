@@ -9,7 +9,10 @@
     "start": "next start",
     "lint": "next lint",
     "generate-metadata": "ts-node --project scripts/tsconfig.json scripts/generateIconMetadata.ts",
-    "debug": "curl -v https://your-vercel-url/debug"
+    "debug": "npm run debug:local && npm run debug:prod",
+    "debug:local": "curl -v http://localhost:3000/api/debug-all",
+    "debug:prod": "curl -v https://icons-git-buildfix-craigs-projects-8f6a4cf3.vercel.app/api/debug-all",
+    "debug:metadata": "curl -v https://icons-git-buildfix-craigs-projects-8f6a4cf3.app/icons-metadata.json"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.0.2",

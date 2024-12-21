@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import DebugPanel from '../components/DebugPanel';
 
 export default function TestPage() {
   const [metadata, setMetadata] = useState<any>(null);
@@ -8,7 +9,10 @@ export default function TestPage() {
 
   useEffect(() => {
     fetch('/icons-metadata.json')
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res.json();
+      })
       .then(data => setMetadata(data))
       .catch(err => setError(err.message));
   }, []);
@@ -22,6 +26,9 @@ export default function TestPage() {
           {JSON.stringify(metadata, null, 2)}
         </pre>
       )}
+      <div className="mt-8">
+        <DebugPanel />
+      </div>
     </div>
   );
 } 
