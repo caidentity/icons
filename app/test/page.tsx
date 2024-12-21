@@ -3,8 +3,14 @@
 import { useEffect, useState } from 'react';
 import DebugPanel from '../components/DebugPanel';
 
+interface IconMetadata {
+  name: string
+  category: string
+  // add other properties as needed
+}
+
 export default function TestPage() {
-  const [metadata, setMetadata] = useState<any>(null);
+  const [metadata, setMetadata] = useState<IconMetadata[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {

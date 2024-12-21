@@ -1,27 +1,31 @@
 import { NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
+import { headers } from 'next/headers';
+import fs from 'fs';
 import path from 'path';
 
 export async function GET() {
-  try {
-    const metadataPath = path.join(process.cwd(), 'public', 'icons-metadata.json');
-    const exists = await fs.access(metadataPath)
-      .then(() => true)
-      .catch(() => false);
-    
-    const stats = exists ? await fs.stat(metadataPath) : null;
+  const headersList = headers();
+  
+  // Check if files exist
+  const publicDir = path.join(process.cwd(), 'public');
+  const metadataPath = path.join(publicDir, 'icons-metadata.json');
+  
+  const debug = {
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV,
+    cwd: process.cwd(),
+    files: {
+      publicDir: {
+        exists: fs.existsSync(publicDir),
+        contents: fs.existsSync(publicDir) ? fs.readdirSync(publicDir) : null
+      },
+      metadataFile: {
+        exists: fs.existsSync(metadataPath),
+        size: fs.existsSync(metadataPath) ? fs.statSync(metadataPath).size : null
+      }
+    },
+    headers: Object.fromEntries(headersList.entries())
+  };
 
-    return NextResponse.json({
-      exists,
-      stats: stats ? {
-        size: stats.size,
-        mode: stats.mode,
-        mtime: stats.mtime
-      } : null,
-      cwd: process.cwd(),
-      fullPath: metadataPath
-    });
-  } catch (error) {
-    return NextResponse.json({ error: String(error) }, { status: 500 });
-  }
+  return NextResponse.json(debug);
 } 

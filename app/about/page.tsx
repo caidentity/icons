@@ -28,7 +28,7 @@ export default function AboutPage() {
 
         <h2 className="text-2xl font-semibold mt-8 mb-4">Contributing</h2>
         <p>
-          We welcome contributions! If you'd like to add new icons or improve the platform,
+          We welcome contributions! If you&apos;d like to add new icons or improve the platform,
           please visit our GitHub repository.
         </p>
       </div>

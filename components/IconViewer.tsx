@@ -2,12 +2,12 @@
 
 import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Search, Download, Eye, X, Link, Check, Code, ArrowDownToLine, FileText } from 'lucide-react';
+import { Search, Download, X, Link, Check, Code, ArrowDownToLine, FileText } from 'lucide-react';
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Alert, AlertDescription } from "./ui/alert";
-import { IconMetadata, IconCategory } from '@/types/icon';
+import { IconMetadata } from '@/types/icon';
 import { loadIconMetadata, loadSvgContent } from '@/lib/iconLoader';
 import IconGrid from './IconGrid';
 import Icon from './Icon';
