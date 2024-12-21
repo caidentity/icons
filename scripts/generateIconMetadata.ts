@@ -170,23 +170,23 @@ function generateMetadata(): void {
     }))
   };
 
-  // Create directory if it doesn't exist
+  // Create directory if it doesn't exist with explicit permissions
   const outputDir = path.dirname(OUTPUT_FILE);
   if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir, { recursive: true });
+    fs.mkdirSync(outputDir, { recursive: true, mode: 0o755 });
   }
 
-  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(metadata, null, 2));
+  // Write file with explicit permissions
+  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(metadata, null, 2), { mode: 0o644 });
   
-  // Print summary
-  console.log('\n Icon Metadata Generation Summary:');
-  console.log(`✅ Generated metadata for ${icons.length} icons`);
-  console.log(`📁 Categories found (${categories.size}):`);
-  Array.from(categories.keys()).sort().forEach(category => {
-    const count = categories.get(category)?.length || 0;
-    console.log(`   - ${category}: ${count} icons`);
-  });
-  console.log(`\n💾 Metadata saved to: ${OUTPUT_FILE}\n`);
+  // Ensure the file exists after writing
+  if (!fs.existsSync(OUTPUT_FILE)) {
+    console.error('❌ Failed to write metadata file');
+    process.exit(1);
+  }
+
+  console.log(`✅ Generated metadata file at: ${OUTPUT_FILE}`);
+  console.log(`📁 File permissions: ${fs.statSync(OUTPUT_FILE).mode}`);
 }
 
 generateMetadata(); 
