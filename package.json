@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "vercel-build": "bash scripts/build.sh",
+    "vercel-build": "next build",
     "start": "next start",
     "lint": "next lint",
     "generate-metadata": "ts-node --project scripts/tsconfig.json scripts/generateIconMetadata.ts",

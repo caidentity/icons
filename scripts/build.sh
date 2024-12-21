@@ -1,9 +1,9 @@
 #!/bin/bash
-set -e  # Exit on error
+set -ex  # Exit on error and print commands
 
 echo "Current directory: $(pwd)"
-echo "Node version: $(node -v)"
-echo "NPM version: $(npm -v)"
+echo "Directory contents:"
+ls -la
 
 echo "Generating metadata..."
 npm run generate-metadata
@@ -14,18 +14,12 @@ if [ -f "public/icons-metadata.json" ]; then
     ls -la public/icons-metadata.json
 else
     echo "❌ Metadata file not found"
+    echo "Contents of public directory:"
+    ls -la public/
     exit 1
 fi
 
 echo "Building Next.js app..."
-npm run build
-
-echo "Checking build output..."
-if [ -d ".next" ]; then
-    echo "✅ Build successful"
-else
-    echo "❌ Build failed"
-    exit 1
-fi
+next build
 
 echo "Build complete!" 
