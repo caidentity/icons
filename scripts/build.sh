@@ -4,18 +4,26 @@ set -ex  # Exit on error and print commands
 echo "Current directory: $(pwd)"
 echo "Node version: $(node -v)"
 echo "NPM version: $(npm -v)"
-echo "Directory structure:"
-tree -L 3 || ls -R  # Use tree if available, fallback to ls -R
+
+# Ensure the public directory exists
+mkdir -p public
 
 echo "Generating metadata..."
-npm run generate-metadata
+NODE_ENV=production npm run generate-metadata
 
 echo "Checking metadata file..."
 if [ -f "public/icons-metadata.json" ]; then
     echo "✅ Metadata file exists"
     ls -la public/icons-metadata.json
-    echo "Metadata file contents (first 10 lines):"
-    head -n 10 public/icons-metadata.json
+    
+    # Create necessary directories and copy files
+    mkdir -p .next/server/public
+    cp public/icons-metadata.json .next/server/public/
+    cp public/icons-metadata.json ./
+    
+    echo "Copied metadata files to additional locations"
+    ls -la .next/server/public/icons-metadata.json || echo "Failed to copy to .next/server/public"
+    ls -la ./icons-metadata.json || echo "Failed to copy to root"
 else
     echo "❌ Metadata file not found"
     echo "Contents of public directory:"
@@ -24,16 +32,12 @@ else
 fi
 
 echo "Building Next.js app..."
-npm run build
+NODE_ENV=production next build
 
-echo "Checking build output..."
-if [ -d ".next" ]; then
-    echo "✅ Build successful"
-    echo "Contents of .next directory:"
-    ls -la .next/
-else
-    echo "❌ Build failed"
-    exit 1
-fi
+echo "Final verification..."
+echo "Checking all possible metadata locations:"
+ls -la public/icons-metadata.json || echo "Not in public/"
+ls -la .next/server/public/icons-metadata.json || echo "Not in .next/server/public/"
+ls -la ./icons-metadata.json || echo "Not in root"
 
 echo "Build complete!" 

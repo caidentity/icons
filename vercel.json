@@ -1,10 +1,17 @@
 {
   "version": 2,
-  "buildCommand": "bash scripts/build.sh",
+  "buildCommand": "npm run vercel-build",
+  "installCommand": "npm install",
   "outputDirectory": ".next",
   "public": true,
   "routes": [
     { "src": "/icons-metadata.json", "dest": "/icons-metadata.json" },
     { "src": "/icons/(.*)", "dest": "/icons/$1" }
-  ]
+  ],
+  "functions": {
+    "app/api/**/*": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  }
 } 
