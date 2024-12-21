@@ -6,38 +6,46 @@ export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
 export async function GET() {
+  console.log('Metadata API called, CWD:', process.cwd())
+  console.log('NODE_ENV:', process.env.NODE_ENV)
+  console.log('VERCEL_ENV:', process.env.VERCEL_ENV)
+
   try {
-    // Try multiple possible paths for the metadata file
     const possiblePaths = [
       path.join(process.cwd(), 'public', 'icons-metadata.json'),
       path.join(process.cwd(), 'icons-metadata.json'),
-      // Add .next/server/public path for production
       path.join(process.cwd(), '.next', 'server', 'public', 'icons-metadata.json')
     ]
+
+    console.log('Checking paths:', possiblePaths)
 
     let metadata = null
     let foundPath = null
 
-    // Try each path until we find the file
     for (const filePath of possiblePaths) {
       try {
-        const fileContent = await fs.readFile(filePath, 'utf8')
-        metadata = JSON.parse(fileContent)
-        foundPath = filePath
-        break
+        console.log('Trying path:', filePath)
+        const exists = await fs.stat(filePath).then(() => true).catch(() => false)
+        console.log('Path exists?', filePath, exists)
+        
+        if (exists) {
+          const fileContent = await fs.readFile(filePath, 'utf8')
+          metadata = JSON.parse(fileContent)
+          foundPath = filePath
+          console.log('Successfully loaded from:', filePath)
+          break
+        }
       } catch (_err) {
-        // Ignore error and continue to next path
+        console.log('Failed to load from:', filePath)
         continue
       }
     }
 
     if (!metadata) {
-      console.error('Metadata file not found in any of the expected locations:', possiblePaths)
+      console.error('Metadata file not found in any location')
       return NextResponse.json({ error: 'Metadata file not found' }, { status: 404 })
     }
 
-    console.log('Successfully loaded metadata from:', foundPath)
-    
     return NextResponse.json(metadata, {
       headers: {
         'Cache-Control': 'public, max-age=3600',
