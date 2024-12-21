@@ -6,11 +6,5 @@
   "routes": [
     { "src": "/icons-metadata.json", "dest": "/icons-metadata.json" },
     { "src": "/icons/(.*)", "dest": "/icons/$1" }
-  ],
-  "functions": {
-    "app/api/**/*": {
-      "memory": 1024,
-      "maxDuration": 10
-    }
-  }
+  ]
 } 

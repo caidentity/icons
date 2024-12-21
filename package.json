@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "generate-metadata": "ts-node --project scripts/tsconfig.json scripts/generateIconMetadata.ts",
-    "debug": "curl -v https://your-vercel-url/api/debug"
+    "debug": "curl -v https://your-vercel-url/debug"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.0.2",
