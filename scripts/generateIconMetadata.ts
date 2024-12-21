@@ -135,58 +135,68 @@ function getCategoryDescription(category: string): string {
   return descriptions[category] || `${category} related icons`;
 }
 
-function generateMetadata(): void {
-  if (!fs.existsSync(SVG_DIR)) {
-    console.error(`❌ SVG directory not found: ${SVG_DIR}`);
-    process.exit(1);
-  }
+export async function generateMetadata() {
+  try {
+    console.log('Starting metadata generation...');
+    console.log('Working directory:', process.cwd());
+    console.log('SVG_DIR:', SVG_DIR);
+    console.log('OUTPUT_FILE:', OUTPUT_FILE);
 
-  const icons = walkDir(SVG_DIR);
-  if (icons.length === 0) {
-    console.warn('⚠️ No SVG files found!');
-    return;
-  }
-
-  const categories = new Map<string, IconInfo[]>();
-
-  icons.forEach(icon => {
-    if (!categories.has(icon.category)) {
-      categories.set(icon.category, []);
+    if (!fs.existsSync(SVG_DIR)) {
+      throw new Error(`SVG directory not found: ${SVG_DIR}`);
     }
-    const categoryIcons = categories.get(icon.category);
-    if (categoryIcons) {
-      categoryIcons.push(icon);
-    }
-  });
 
-  const metadata: MetadataOutput = {
-    categories: Array.from(categories.entries()).map(([name, icons]) => ({
-      name,
-      description: getCategoryDescription(name),
-      icons: icons.map(icon => ({
-        ...icon,
-        tags: [...icon.tags]
+    const icons = walkDir(SVG_DIR);
+    if (icons.length === 0) {
+      console.warn('⚠️ No SVG files found!');
+      return;
+    }
+
+    const categories = new Map<string, IconInfo[]>();
+
+    icons.forEach(icon => {
+      if (!categories.has(icon.category)) {
+        categories.set(icon.category, []);
+      }
+      const categoryIcons = categories.get(icon.category);
+      if (categoryIcons) {
+        categoryIcons.push(icon);
+      }
+    });
+
+    const metadata: MetadataOutput = {
+      categories: Array.from(categories.entries()).map(([name, icons]) => ({
+        name,
+        description: getCategoryDescription(name),
+        icons: icons.map(icon => ({
+          ...icon,
+          tags: [...icon.tags]
+        }))
       }))
-    }))
-  };
+    };
 
-  // Create directory if it doesn't exist with explicit permissions
-  const outputDir = path.dirname(OUTPUT_FILE);
-  if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir, { recursive: true, mode: 0o755 });
-  }
+    // Create directory if it doesn't exist with explicit permissions
+    const outputDir = path.dirname(OUTPUT_FILE);
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true, mode: 0o755 });
+    }
 
-  // Write file with explicit permissions
-  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(metadata, null, 2), { mode: 0o644 });
-  
-  // Ensure the file exists after writing
-  if (!fs.existsSync(OUTPUT_FILE)) {
-    console.error('❌ Failed to write metadata file');
+    // Write file with explicit permissions
+    fs.writeFileSync(OUTPUT_FILE, JSON.stringify(metadata, null, 2), { mode: 0o644 });
+    
+    // Verify the file was written and log stats
+    if (!fs.existsSync(OUTPUT_FILE)) {
+      throw new Error('Metadata file was not created');
+    }
+
+    const stats = fs.statSync(OUTPUT_FILE);
+    console.log(`📊 Metadata file size: ${stats.size} bytes`);
+    console.log('✅ Metadata generated successfully');
+
+  } catch (error) {
+    console.error('❌ Error generating metadata:', error);
     process.exit(1);
   }
-
-  console.log(`✅ Generated metadata file at: ${OUTPUT_FILE}`);
-  console.log(`📁 File permissions: ${fs.statSync(OUTPUT_FILE).mode}`);
 }
 
 generateMetadata(); 

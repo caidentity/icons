@@ -21,7 +21,10 @@ const nextConfig = {
   webpack: (config) => {
     config.resolve.fallback = { fs: false, path: false };
     return config;
-  }
+  },
+  experimental: {
+    allowedRevalidateHeaderKeys: ['my-custom-key'],
+  },
 }
 
 module.exports = nextConfig 
